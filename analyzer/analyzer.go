@@ -27,6 +27,12 @@ type IncomeMessage struct {
 	IsConcatenation bool
 }
 
+var SupportedLoggers = map[string][]string{
+	"log":             {"Print", "Printf", "Fatal", "Fatalf", "Panic", "Panicf", "Printf"},
+	"log/slog":        {"Info", "Warn", "Debug", "Error", "Log", "LogAttrs"},
+	"go.uber.org/zap": {"Info", "Debug", "Warn", "Error", "Panic", "Fatal"},
+}
+
 func run(pass *analysis.Pass) (interface{}, error) {
 	//instead tree inspect call
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
