@@ -1,7 +1,10 @@
 package analyzer
 
 import (
-	"analysis"
+	"errors"
+
+	"golang.org/x/tools/go/analysis"
+	//"golang.org/x/tools/go/analysis/passes/slog"
 )
 
 var Analyzer = &analysis.Analyzer{
@@ -11,14 +14,5 @@ var Analyzer = &analysis.Analyzer{
 }
 
 func run(pass *analysis.Pass) (interface{}, error) {
-	switch {
-	case:
-
-	case:
-
-	case:
-
-	case:
-
-	}
+	return nil, errors.New("not implemented yet")
 }
