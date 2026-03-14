@@ -27,6 +27,8 @@ func CheckRules(pass *analysis.Pass, msg *IncomeMessage) bool {
 		return false
 	} else if !rules.IsEnglishLetter(msg.text) {
 		return false
+	} else if !rules.IsEmojiOrSpecialSymbol(msg.text) {
+		return false
 	}
 
 	return true

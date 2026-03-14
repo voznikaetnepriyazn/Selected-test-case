@@ -19,3 +19,13 @@ func IsEnglishLetter(s string) bool {
 
 	return false
 }
+
+func IsEmojiOrSpecialSymbol(s string) bool {
+	for _, i := range s {
+		if unicode.IsPunct(i) || unicode.IsSymbol(i) {
+			return false
+		}
+	}
+
+	return true
+}
