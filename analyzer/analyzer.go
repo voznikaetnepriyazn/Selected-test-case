@@ -25,6 +25,8 @@ func run(pass *analysis.Pass) (interface{}, error) {
 func CheckRules(pass *analysis.Pass, msg *IncomeMessage) bool {
 	if !rules.IsStartsFromLowerCase(msg.text) {
 		return false
+	} else if !rules.IsEnglishLetter(msg.text) {
+		return false
 	}
 
 	return true
