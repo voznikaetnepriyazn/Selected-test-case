@@ -3,9 +3,11 @@ package analyzer
 import (
 	//"errors"
 	"go/ast"
+	"go/token"
 
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
+	"testcase.go/config"
 	"testcase.go/rules"
 
 	"golang.org/x/tools/go/ast/inspector"
@@ -21,11 +23,14 @@ var Analyzer = &analysis.Analyzer{
 
 type IncomeMessage struct {
 	text string
+	pos  token.Pos
 }
 
 func run(pass *analysis.Pass) (interface{}, error) {
 	//instead tree inspect call
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
+
+	cfg := config.Load(pass)
 
 	//filter only funcs
 	nodeFilter := []ast.Node{
@@ -42,7 +47,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 		messages := ExtractMessagesFromLog(be, pass)
 
 		for _, message := range messages {
-			CheckRules(pass, message)
+			CheckRules(pass, cfg, message)
 		}
 	})
 
@@ -57,16 +62,14 @@ func ExtractMessagesFromLog(be *ast.CallExpr, pass *analysis.Pass) []*IncomeMess
 
 }
 
-func CheckRules(pass *analysis.Pass, msg *IncomeMessage) bool {
-	if !rules.IsStartsFromLowerCase(msg.text) {
-		return false
-	} else if !rules.IsEnglishLetter(msg.text) {
-		return false
-	} else if !rules.IsEmojiOrSpecialSymbol(msg.text) {
-		return false
-	} else if !rules.IsSensetiveData(msg.text) {
-		return false
+func CheckRules(pass *analysis.Pass, cfg *config.Config, msg *IncomeMessage) {
+	if config.Init().LowerLetterRule && !rules.IsStartsFromLowerCase(msg.text) {
+		pass.Reportf(msg.pos, "log message must starts from lower case")
+	} else if config.Init().IsEnglishRule && !rules.IsEnglishLetter(msg.text) {
+		pass.Reportf(msg.pos, "log message must contains only english letters")
+	} else if config.Init().IsExtraSymbolsRule && !rules.IsEmojiOrSpecialSymbol(msg.text) {
+		pass.Reportf(msg.pos, "log message must not contains emoji or punctuation symbols")
+	} else if config.Init().IsSensetiveDataRule && !rules.IsSensetiveData(msg.text) {
+		pass.Reportf(msg.pos, "log message must not contains sensetive data")
 	}
-
-	return true
 }
