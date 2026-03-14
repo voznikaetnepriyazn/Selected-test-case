@@ -22,8 +22,9 @@ var Analyzer = &analysis.Analyzer{
 }
 
 type IncomeMessage struct {
-	text string
-	pos  token.Pos
+	text            string
+	pos             token.Pos
+	IsConcatenation bool
 }
 
 func run(pass *analysis.Pass) (interface{}, error) {
