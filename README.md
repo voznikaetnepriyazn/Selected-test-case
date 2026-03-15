@@ -47,9 +47,7 @@
 
 **Запрещено**:
 - Эмодзи и символы за пределами ASCII (`\u{1F600}`–`\u{1F64F}` и др.)
-- Повторяющаяся пунктуация: `!!!`, `???`, `...` (3+ символа подряд)
-
-**Разрешено**: базовая пунктуация `. , ! ? : ; " ' - ( ) [ ] { } / @ # $ % & * + = < > _ | \ ` ~`
+- Пунктуация: `!!!`, `???`, `...` 
 
 **Обоснование**: чистота логов, совместимость с парсерами, избежание проблем с кодировками.
 
@@ -63,11 +61,9 @@
 | ✅ | `log.Info("user authenticated")`<br>`slog.Debug("api request completed")` |
 
 **Проверяемые паттерны** (регистронезависимые):
-- password, passwd, pwd
-- api_key, api-key, apikey
-- token, secret, auth
-- credentials, cred
-- private_key, private-key
+- password
+- api_key
+- token,
 
 **Важно**: правило срабатывает **только при конкатенации строк** (`"msg" + var`), чтобы не блокировать безопасные сообщения вида `"password field is required"`.
 
@@ -92,7 +88,6 @@
 |-----------|-----------|
 | **golangci-lint** | ✅ Плагин через `.custom-gcl.yml` |
 | **go vet** | ✅ Standalone режим через `-vettool` |
-| **CI/CD** | ✅ GitHub Actions, GitLab CI |
 
 ### Поддерживаемые логгеры
 
@@ -101,7 +96,6 @@
 | `log` | Print, Printf, Println, Fatal, Panic |
 | `log/slog` | Info, Debug, Warn, Error, Log, LogAttrs |
 | `go.uber.org/zap` (Logger) | Info, Debug, Warn, Error, Panic, Fatal |
-| `go.uber.org/zap` (SugaredLogger) | Info, Debug, Warn, Error, Panic, Fatal |
 
 ---
 
@@ -120,3 +114,51 @@ plugins:
   - module: 'github.com/yourname/log-linter'
     import: 'github.com/yourname/log-linter/pkg/loglinter'
     path: .
+
+**2. Соберите кастомный бинарник:**
+bash
+1 golangci-lint custom -c .custom-gcl.yml
+
+**3. Запустите проверку:**
+./bin/custom-gcl-loglinter run ./...
+
+**4. Добавьте в .golangci.yml вашего проекта:**
+```yaml
+linters-settings:
+  loglinter:
+    check-lowercase: true
+    check-english: true
+    check-symbols: true
+    check-sensitive: true
+    extra-sensitive-patterns:
+      - "(?i)client_secret"
+      - "(?i)refresh_token"
+
+linters:
+  enable:
+    - loglinter
+
+##🛠️ Разработка
+Требования к окружению
+```bash
+go version >= 1.22
+golangci-lint >= 1.55 (для сборки плагинов)
+
+Быстрый старт
+```bash
+# 1. Клонируйте репозиторий
+git clone https://github.com/yourname/log-linter.git
+cd log-linter
+
+# 2. Установите зависимости
+go mod download
+
+# 3. Запустите тесты
+go test ./...
+
+# 4. Соберите standalone-версию
+go build -o log-linter ./cmd/log-linter
+
+# 5. Протестируйте на примере
+./log-linter ./example/...
+
