@@ -1,0 +1,10 @@
+linters:
+  enable:
+    - loglinter
+
+linters-settings:
+  loglinter:
+    check-lowercase: true
+    check-english: true
+    check-symbols: true
+    check-sensitive: true
