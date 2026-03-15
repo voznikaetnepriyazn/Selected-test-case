@@ -1,4 +1,4 @@
-package testdata
+package tests
 
 import (
 	"log"
@@ -7,19 +7,49 @@ import (
 	"go.uber.org/zap"
 )
 
-func testLogs() {
+func testLowercase() {
+	slog.Info("Starting server")
+	log.Print("Error occurred")
+	zap.L().Warn("Connection lost")
 
-	slog.Info("Starting server on port 8080") // want "lowercase"
+	slog.Info("starting server")
+	log.Print("error occurred")
+	zap.L().Warn("connection lost")
 
-	log.Info("запуск сервера") // want "English"
+	slog.Info("127.0.0.1 connected")
+	log.Print("/api/v1/users called")
 
-	slog.Info("server started!🚀") // want "invalid symbols"
+	slog.Info("  Capital after spaces")
+}
 
+func testEnglish() {
+	slog.Info("запуск сервера")
+	log.Print("ошибка подключения")
+
+	slog.Info("started 🚀")
+
+	slog.Info("server started")
+	log.Print("connection error")
+}
+
+func testSymbols() {
+	slog.Info("started!!!")
+	slog.Info("waiting...")
+
+	slog.Info("launched 🚀")
+
+	slog.Info("started!")
+	slog.Info("waiting..")
+	slog.Info("version 1.2.3")
+}
+
+func testSensitive() {
 	password := "secret123"
-	log.Info("user password: " + password) // want "avoid sensitive"
+	apiKey := "key-abc"
 
-	// correct examples
-	slog.Info("starting server on port 8080")
-	log.Info("server started")
-	zap.L().Info("connection established")
+	log.Info("password: " + password)
+	slog.Debug("api_key=" + apiKey)
+
+	slog.Info("user authenticated")
+	log.Print("api request completed")
 }

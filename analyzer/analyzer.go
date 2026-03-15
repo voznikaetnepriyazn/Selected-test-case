@@ -7,10 +7,11 @@ import (
 	"go/types"
 	"strings"
 
+	"testcase/config"
+	"testcase/rules"
+
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
-	"testcase.go/config"
-	"testcase.go/rules"
 
 	"golang.org/x/tools/go/ast/inspector"
 	//"golang.org/x/tools/go/analysis/passes/slog"
@@ -159,7 +160,7 @@ func ExtractMessagesFromLog(be *ast.CallExpr, pass *analysis.Pass) []*IncomeMess
 func CheckRules(pass *analysis.Pass, cfg *config.Config, msg *IncomeMessage) {
 	if cfg.LowerLetterRule && !rules.IsStartsFromLowerCase(msg.Text) {
 		pass.Reportf(msg.Pos, "log message must starts from lower case")
-	} else if cfg.IsEnglishRule && !rules.IsEnglishLetter(msg.Text) {
+	} else if cfg.IsEnglishRule && !rules.IsEnglishOnly(msg.Text) {
 		pass.Reportf(msg.Pos, "log message must contains only english letters")
 	} else if cfg.IsExtraSymbolsRule && !rules.IsEmojiOrSpecialSymbol(msg.Text) {
 		pass.Reportf(msg.Pos, "log message must not contains emoji or punctuation symbols")

@@ -6,21 +6,32 @@ import (
 )
 
 func IsStartsFromLowerCase(s string) bool {
-	if unicode.IsLetter(rune(s[0])) && unicode.IsLower(rune(s[0])) {
+	if len(s) == 0 {
 		return true
 	}
 
-	return false
+	for _, r := range s {
+		if unicode.IsSpace(r) || unicode.IsDigit(r) || unicode.IsPunct(r) || unicode.IsSymbol(r) {
+			continue
+		}
+		return unicode.IsLower(r)
+	}
+
+	return true
 }
 
-func IsEnglishLetter(s string) bool {
-	for _, i := range s {
-		if unicode.IsLetter(i) || unicode.IsDigit(i) || unicode.IsSpace(i) {
-			return true
+func IsEnglishOnly(s string) bool {
+	if len(s) == 0 {
+		return true
+	}
+
+	for _, r := range s {
+		if r > 0x7F {
+			return false
 		}
 	}
 
-	return false
+	return true
 }
 
 func IsEmojiOrSpecialSymbol(s string) bool {

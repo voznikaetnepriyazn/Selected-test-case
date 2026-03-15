@@ -1,0 +1,8 @@
+version: v1.61.0
+name: custom-gcl-loglinter
+destination: ./bin
+
+plugins:
+  - module: 'testcase'
+    import: 'testcase/analyzer'
+    path: .
