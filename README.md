@@ -101,9 +101,9 @@
 
 ## 🚀 Установка и использование
 
-### Вариант 1: Через golangci-lint (рекомендуется)
+### Через golangci-lint 
 
-**1. Создайте файл `.custom-gcl.yml`:**
+1. Создайте файл `.custom-gcl.yml`:
 
 ```yaml
 version: v1.55.2
@@ -114,51 +114,67 @@ plugins:
   - module: 'github.com/yourname/log-linter'
     import: 'github.com/yourname/log-linter/pkg/loglinter'
     path: .
+```
 
-**2. Соберите кастомный бинарник:**
-bash
-1 golangci-lint custom -c .custom-gcl.yml
-
-**3. Запустите проверку:**
+2. Запустите проверку проекта
+```bash
 ./bin/custom-gcl-loglinter run ./...
+```
 
-**4. Добавьте в .golangci.yml вашего проекта:**
+3. Настройте golangci‑lint в проекте
+Добавьте конфигурацию в файл .golangci.yml вашего проекта:
+
 ```yaml
 linters-settings:
   loglinter:
-    check-lowercase: true
-    check-english: true
-    check-symbols: true
-    check-sensitive: true
-    extra-sensitive-patterns:
-      - "(?i)client_secret"
-      - "(?i)refresh_token"
+    check-lowercase: true          # Проверять использование нижнего регистра
+    check-english: true            # Проверять, что сообщения на английском
+    check-symbols: true            # Проверять наличие специальных символов
+    check-sensitive: true         # Проверять на наличие чувствительных данных
+    extra-sensitive-patterns:      # Дополнительные шаблоны для поиска чувствительных данных
+      - "(?i)client_secret"       # регистронезависимый поиск client_secret
+      - "(?i)refresh_token"        # регистронезависимый поиск refresh_token
+
 
 linters:
   enable:
     - loglinter
+```
 
-##🛠️ Разработка
+🛠️ Разработка
 Требования к окружению
-```bash
-go version >= 1.22
-golangci-lint >= 1.55 (для сборки плагинов)
+Go версии 1.22 или выше (go version >= 1.22)
+
+golangci-lint версии 1.55 или выше (для сборки плагинов)
 
 Быстрый старт
+Клонируйте репозиторий:
+
 ```bash
-# 1. Клонируйте репозиторий
 git clone https://github.com/yourname/log-linter.git
 cd log-linter
+```
 
-# 2. Установите зависимости
+Установите зависимости:
+
+```bash
 go mod download
+```
 
-# 3. Запустите тесты
+Запустите тесты:
+
+```bash
 go test ./...
+```
 
-# 4. Соберите standalone-версию
+Соберите standalone‑версию:
+
+```bash
 go build -o log-linter ./cmd/log-linter
+```
 
-# 5. Протестируйте на примере
+Протестируйте на примере:
+
+```bash
 ./log-linter ./example/...
-
+```
